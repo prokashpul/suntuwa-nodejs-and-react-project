@@ -9,7 +9,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-
 //mongodb
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.jpceo.mongodb.net/?retryWrites=true&w=majority`;
@@ -22,13 +21,13 @@ const run = async () => {
   try {
     await client.connect();
 
-    const toolsCollection = client.db("santuwa").collection("user");
-    const user = {
-      name: "Prokash Pul",
-      email: "prokashpul2@gmail.com",
-    };
-    const result = await toolsCollection.insertOne(user);
-    console.log(result.insertedId);
+    const userCollection = client.db("santuwa").collection("user");
+
+    app.post("/user", async (req, res) => {
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
   } finally {
     // await client.close();
   }
